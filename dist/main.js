@@ -22870,6 +22870,7 @@ async function moveIssueCardToColumn(octokit, inputs) {
     repo,
     projectName: inputs.projectName
   });
+  core2.info(JSON.stringify(getStatusFieldOptionsData, null, 2));
   const project = getStatusFieldOptionsData?.data?.repository?.projectsV2?.nodes?.[0];
   if (!project) {
     throw new Error("Project not found. Check projectName argument.");
