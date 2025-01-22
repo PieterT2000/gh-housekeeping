@@ -22844,6 +22844,8 @@ async function updateIssueStatus(octokit, prNumber, inputs) {
 }
 async function moveIssueCardToColumn(octokit, inputs) {
   const { owner, repo } = github2.context.repo;
+  console.log(owner, repo, inputs.projectName);
+  core2.info(`context: ${JSON.stringify({ owner, repo, inputs }, null, 2)}`);
   const getStatusFieldOptionsData = await octokit.graphql(`query getStatusFieldOptions($owner: String!, $repo: String!, $projectName: String!) {
   repository(owner: $owner, name: $repo) {
     projectsV2(query: $projectName, first: 5) {
