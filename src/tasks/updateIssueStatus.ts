@@ -75,6 +75,8 @@ async function moveIssueCardToColumn(
     3. Move card to new column by updating Status field
   */
   const { owner, repo } = github.context.repo;
+  console.log(owner, repo, inputs.projectName);
+  core.info(`context: ${JSON.stringify({ owner, repo, inputs }, null, 2)}`);
 
   const getStatusFieldOptionsData = await octokit.graphql<{ data: any }>(
     `query getStatusFieldOptions($owner: String!, $repo: String!, $projectName: String!) {
