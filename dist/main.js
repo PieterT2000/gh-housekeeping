@@ -22844,7 +22844,6 @@ async function updateIssueStatus(octokit, prNumber, inputs) {
 }
 async function moveIssueCardToColumn(octokit, inputs) {
   const { owner, repo } = github2.context.repo;
-  console.log(owner, repo, inputs.projectName);
   core2.info(`context: ${JSON.stringify({ owner, repo, inputs }, null, 2)}`);
   const getStatusFieldOptionsData = await octokit.graphql(`query getStatusFieldOptions($owner: String!, $repo: String!, $projectName: String!) {
   repository(owner: $owner, name: $repo) {
@@ -22871,7 +22870,7 @@ async function moveIssueCardToColumn(octokit, inputs) {
     projectName: inputs.projectName
   });
   core2.info(JSON.stringify(getStatusFieldOptionsData, null, 2));
-  const project = getStatusFieldOptionsData?.data?.repository?.projectsV2?.nodes?.[0];
+  const project = getStatusFieldOptionsData?.repository?.projectsV2?.nodes?.[0];
   if (!project) {
     throw new Error("Project not found. Check projectName argument.");
   }
@@ -22898,7 +22897,7 @@ async function moveIssueCardToColumn(octokit, inputs) {
     projectId,
     contentId: inputs.issue_node_id
   });
-  const projectCardId = ensureIssueProjectCardIdData?.data?.addProjectV2ItemById?.item?.id;
+  const projectCardId = ensureIssueProjectCardIdData?.addProjectV2ItemById?.item?.id;
   const changeIssueProjectCardStatusData = await octokit.graphql(`mutation changeStatus(
   $field: ID!
   $item: ID!
@@ -22921,7 +22920,7 @@ async function moveIssueCardToColumn(octokit, inputs) {
     project: projectId,
     value: statusFieldOptionId
   });
-  const mutationID = changeIssueProjectCardStatusData?.data?.clientMutationId;
+  const mutationID = changeIssueProjectCardStatusData?.updateProjectV2ItemFieldValue?.clientMutationId;
   if (!mutationID) {
     throw new Error("Failed to update project card status.");
   }

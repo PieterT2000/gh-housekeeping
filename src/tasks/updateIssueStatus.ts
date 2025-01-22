@@ -75,10 +75,9 @@ async function moveIssueCardToColumn(
     3. Move card to new column by updating Status field
   */
   const { owner, repo } = github.context.repo;
-  console.log(owner, repo, inputs.projectName);
   core.info(`context: ${JSON.stringify({ owner, repo, inputs }, null, 2)}`);
 
-  const getStatusFieldOptionsData = await octokit.graphql<{ data: any }>(
+  const getStatusFieldOptionsData = await octokit.graphql<{ repository: any }>(
     `query getStatusFieldOptions($owner: String!, $repo: String!, $projectName: String!) {
   repository(owner: $owner, name: $repo) {
     projectsV2(query: $projectName, first: 5) {
@@ -108,8 +107,7 @@ async function moveIssueCardToColumn(
 
   core.info(JSON.stringify(getStatusFieldOptionsData, null, 2));
 
-  const project =
-    getStatusFieldOptionsData?.data?.repository?.projectsV2?.nodes?.[0];
+  const project = getStatusFieldOptionsData?.repository?.projectsV2?.nodes?.[0];
 
   if (!project) {
     throw new Error("Project not found. Check projectName argument.");
@@ -137,7 +135,9 @@ async function moveIssueCardToColumn(
 
   const statusFieldOptionId = statusFieldOption.id;
 
-  const ensureIssueProjectCardIdData = await octokit.graphql<{ data: any }>(
+  const ensureIssueProjectCardIdData = await octokit.graphql<{
+    addProjectV2ItemById: any;
+  }>(
     `mutation ensureIssueProjectCardId($projectId: ID!, $contentId: ID!) {
       addProjectV2ItemById(
         input: { projectId: $projectId, contentId: $contentId }
@@ -154,9 +154,11 @@ async function moveIssueCardToColumn(
   );
 
   const projectCardId =
-    ensureIssueProjectCardIdData?.data?.addProjectV2ItemById?.item?.id;
+    ensureIssueProjectCardIdData?.addProjectV2ItemById?.item?.id;
 
-  const changeIssueProjectCardStatusData = await octokit.graphql<{ data: any }>(
+  const changeIssueProjectCardStatusData = await octokit.graphql<{
+    updateProjectV2ItemFieldValue: any;
+  }>(
     `mutation changeStatus(
   $field: ID!
   $item: ID!
@@ -182,7 +184,9 @@ async function moveIssueCardToColumn(
     }
   );
 
-  const mutationID = changeIssueProjectCardStatusData?.data?.clientMutationId;
+  const mutationID =
+    changeIssueProjectCardStatusData?.updateProjectV2ItemFieldValue
+      ?.clientMutationId;
 
   if (!mutationID) {
     throw new Error("Failed to update project card status.");
