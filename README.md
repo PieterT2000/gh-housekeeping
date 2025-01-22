@@ -23,10 +23,20 @@ Various Github housekeeping utilities, such as
 #### 1. Autolink issues to PRs
 
 ```yaml
-- uses: gh-housekeeping@latest
-  with:
-    task: autolink-issue
-    token: ${{ secrets.GITHUB_TOKEN }}
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  autolink-issue:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - uses: PieterT2000/gh-housekeeping@latest
+        with:
+          task: autolink-issue
+          token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
 #### 2. Update issue status on project board on PR merge
@@ -38,12 +48,16 @@ on:
 
 jobs:
   update-issue-status:
-    - uses: gh-housekeeping@latest
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        task: update-issue-status
-        project-name: "Project Name"
-        done-column: "Done"
-        qa-column: "QA/Testing"
-        skip-qa-label: "no QA"
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    permissions: write-all
+    steps:
+      - uses: PieterT2000/gh-housekeeping@latest
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          task: update-issue-status
+          project-name: "Project Name"
+          done-column: "Done"
+          qa-column: "QA/Testing"
+          skip-qa-label: "no QA"
 ```
