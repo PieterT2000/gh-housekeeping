@@ -1,18 +1,37 @@
-name: Add latest tag to new release
+name: Release
+
 on:
-  release:
-    types: [published]
+  push:
+    branches:
+      - main
 
 jobs:
-  run:
-    name: Add/update tag to new release
+  release:
+    name: Release
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      issues: write
+      pull-requests: write
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@master
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: Run latest-tag
-        uses: EndBug/latest-tag@latest
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Build
+        run: bun run build
+
+      - name: Create Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npx semantic-release

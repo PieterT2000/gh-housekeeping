@@ -18,6 +18,20 @@ export async function autolinkIssue(octokit: Octokit, prNumber: number) {
     return;
   }
 
+  let issue: Awaited<ReturnType<typeof octokit.rest.issues.get>>;
+  try {
+    issue = await octokit.rest.issues.get({
+      owner,
+      repo,
+      issue_number: issueNumber,
+    });
+  } catch (error) {
+    core.warning(
+      `Failed to get issue with number ${issueNumber}. This could be because the issue number in the branch name is invalid. Skipping...`
+    );
+    return;
+  }
+
   const reviewComments = await octokit.rest.issues.listComments({
     owner,
     repo,

@@ -3,6 +3,7 @@ import * as github from "@actions/github";
 import type { Octokit } from "../types.ts";
 import { extractBranchName, strContains } from "../utils.ts";
 import { extractIssueNumberFromBranchName } from "../utils.ts";
+import type { RestEndpointMethodTypes } from "@octokit/rest";
 
 export async function updateIssueStatus(
   octokit: Octokit,
@@ -20,6 +21,19 @@ export async function updateIssueStatus(
 
   if (!issueNumber) {
     core.warning(`⚠️ No issue number found in branch name: ${branchName}.`);
+    return;
+  }
+
+  try {
+    await octokit.rest.issues.get({
+      owner,
+      repo,
+      issue_number: issueNumber,
+    });
+  } catch (error) {
+    core.warning(
+      `Failed to get issue with number ${issueNumber}. This could be because the issue number in the branch name is invalid. Skipping...`
+    );
     return;
   }
 
