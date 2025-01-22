@@ -106,6 +106,8 @@ async function moveIssueCardToColumn(
     }
   );
 
+  core.info(JSON.stringify(getStatusFieldOptionsData, null, 2));
+
   const project =
     getStatusFieldOptionsData?.data?.repository?.projectsV2?.nodes?.[0];
 
