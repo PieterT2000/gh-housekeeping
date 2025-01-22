@@ -1,0 +1,22 @@
+{
+  "name": "gh-housekeeping",
+  "module": "dist/index.js",
+  "type": "module",
+  "scripts": {
+    "build": "bun build ./src/main.ts --outdir ./dist --target node",
+    "docs": "action-docs --update-readme"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.1.18",
+    "action-docs": "^2.5.1"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@actions/core": "^1.11.1",
+    "@actions/github": "^6.0.0",
+    "@octokit/rest": "^21.1.0",
+    "dotenv": "^16.4.7"
+  }
+}

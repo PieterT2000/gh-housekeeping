@@ -1,0 +1,36 @@
+name: "gh-housekeeping"
+description: "Github housekeeping functionality (e.g. autolink prs with issues, moving issues between columns on the project board)"
+author: "PieterT2000"
+
+inputs:
+  task:
+    required: true
+    description: "The task to run"
+    options:
+      - "autolink-issue"
+      - "update-issue-status"
+  project-name:
+    required: false
+    description: "Only used if task is update-issue-status"
+  done-column:
+    required: false
+    description: "The name of the Done column to move the project issue to"
+    default: "Done"
+  qa-column:
+    required: false
+    description: "The name of the QA/Testing column to move the project issue to"
+  skip-qa-label:
+    required: false
+    description: "The label that will be used to check when the QA/Testing column move should be skipped. If a PR has this label, the linked issue will be moved directly to the Done column."
+  token:
+    required: true
+    description: "GH Token: please ensure this token has repository and project permissions"
+    default: ${{ github.token }}
+
+runs:
+  using: "node22"
+  main: "dist/main.js"
+
+branding:
+  icon: "link"
+  color: "blue"
