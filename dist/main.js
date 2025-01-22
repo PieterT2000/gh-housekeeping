@@ -22914,7 +22914,9 @@ async function moveIssueCardToColumn(octokit, inputs) {
       }
     }
   ) {
-    clientMutationId
+    projectV2Item {
+      id
+    }
   }
 }`, {
     field: statusFieldId,
@@ -22922,9 +22924,9 @@ async function moveIssueCardToColumn(octokit, inputs) {
     project: projectId,
     value: statusFieldOptionId
   });
-  const mutationID = changeIssueProjectCardStatusData?.updateProjectV2ItemFieldValue?.clientMutationId;
-  if (!mutationID) {
-    throw new Error("Failed to update project card status.");
+  const projectCardIdFromUpdate = changeIssueProjectCardStatusData?.updateProjectV2ItemFieldValue?.projectV2Item?.id;
+  if (!projectCardIdFromUpdate) {
+    core2.error(`Failed to update project card status. ${JSON.stringify(changeIssueProjectCardStatusData, null, 2)}`);
   }
 }
 
