@@ -7,7 +7,7 @@
     "docs": "action-docs --update-readme"
   },
   "devDependencies": {
-    "@types/bun": "^1.18.0",
+    "@types/bun": "^1.x.x",
     "action-docs": "^2.5.1",
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/git": "^10.0.1",
