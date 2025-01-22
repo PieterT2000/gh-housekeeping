@@ -133,7 +133,7 @@ async function moveIssueCardToColumn(
     );
   }
 
-  const statusFieldOptionId = statusFieldOption.id;
+  const statusFieldOptionId = statusFieldOption.id as string;
 
   const ensureIssueProjectCardIdData = await octokit.graphql<{
     addProjectV2ItemById: any;
@@ -163,14 +163,16 @@ async function moveIssueCardToColumn(
   $field: ID!
   $item: ID!
   $project: ID!
-  $value: ProjectV2FieldValue!
+  $value: String!
 ) {
   updateProjectV2ItemFieldValue(
     input: {
       fieldId: $field
       itemId: $item
       projectId: $project
-      value: $value
+      value: {
+        singleSelectOptionId: $value
+      }
     }
   ) {
     clientMutationId

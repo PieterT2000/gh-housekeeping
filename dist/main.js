@@ -22902,14 +22902,16 @@ async function moveIssueCardToColumn(octokit, inputs) {
   $field: ID!
   $item: ID!
   $project: ID!
-  $value: ProjectV2FieldValue!
+  $value: String!
 ) {
   updateProjectV2ItemFieldValue(
     input: {
       fieldId: $field
       itemId: $item
       projectId: $project
-      value: $value
+      value: {
+        singleSelectOptionId: $value
+      }
     }
   ) {
     clientMutationId
