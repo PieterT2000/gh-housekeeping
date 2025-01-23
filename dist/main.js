@@ -22786,7 +22786,7 @@ async function autolinkIssue(octokit, prNumber) {
   const reviewComments = await octokit.rest.issues.listComments({
     owner,
     repo,
-    issue_number: prNumber
+    issue_number: issueNumber
   });
   const botComment = hasLinkedIssueBotComment({
     comments: reviewComments.data.map((comment) => ({
@@ -22796,12 +22796,6 @@ async function autolinkIssue(octokit, prNumber) {
     issueNumber
   });
   if (!botComment) {
-    await octokit.rest.issues.createComment({
-      owner,
-      repo,
-      issue_number: prNumber,
-      body: `Adresses #${issueNumber} `
-    });
     await octokit.rest.issues.createComment({
       owner,
       repo,
