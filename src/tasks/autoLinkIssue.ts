@@ -35,7 +35,7 @@ export async function autolinkIssue(octokit: Octokit, prNumber: number) {
   const reviewComments = await octokit.rest.issues.listComments({
     owner,
     repo,
-    issue_number: prNumber,
+    issue_number: issueNumber,
   });
 
   const botComment = hasLinkedIssueBotComment({
@@ -47,14 +47,6 @@ export async function autolinkIssue(octokit: Octokit, prNumber: number) {
   });
 
   if (!botComment) {
-    // Create a comment on the PR as well as on the issue
-    await octokit.rest.issues.createComment({
-      owner,
-      repo,
-      issue_number: prNumber,
-      body: `Adresses #${issueNumber} `,
-    });
-
     await octokit.rest.issues.createComment({
       owner,
       repo,
