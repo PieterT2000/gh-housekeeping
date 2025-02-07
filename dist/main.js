@@ -22750,11 +22750,11 @@ function extractIssueNumberFromBranchName(branchName) {
   return parseInt(issueNumberMatch[1]);
 }
 var botUsername = "github-actions[bot]";
-function getLinkedIssueNumberFromBotComment(params) {
-  return params.comments.find((comment) => comment.userName === botUsername && strContains(comment.body, `#${params.issueNumber}`));
+function getLinkedIssueBotComment(params) {
+  return params.comments.find((comment) => comment.userName?.toLowerCase() === botUsername.toLowerCase() && strContains(comment.body, `${params.prNumber}`));
 }
 function hasLinkedIssueBotComment(params) {
-  return !!getLinkedIssueNumberFromBotComment(params);
+  return !!getLinkedIssueBotComment(params);
 }
 function strContains(a, b) {
   if (!a) {
@@ -22783,17 +22783,18 @@ async function autolinkIssue(octokit, prNumber) {
     core.warning(`Failed to get issue with number ${issueNumber}. This could be because the issue number in the branch name is invalid. Skipping...`);
     return;
   }
-  const reviewComments = await octokit.rest.issues.listComments({
+  const issueComments = await octokit.rest.issues.listComments({
     owner,
     repo,
-    issue_number: issueNumber
+    issue_number: issueNumber,
+    per_page: 200
   });
   const botComment = hasLinkedIssueBotComment({
-    comments: reviewComments.data.map((comment) => ({
+    comments: issueComments.data.map((comment) => ({
       userName: comment.user?.login,
       body: comment.body
     })),
-    issueNumber
+    prNumber
   });
   if (!botComment) {
     await octokit.rest.issues.createComment({
