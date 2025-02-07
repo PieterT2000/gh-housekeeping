@@ -32,7 +32,7 @@ describe("getLinkedIssueFromBotComment", () => {
     expect(
       hasLinkedIssueBotComment({
         comments,
-        issueNumber: 123,
+        prNumber: 123,
       })
     ).toBe(true);
   });
@@ -42,7 +42,7 @@ describe("getLinkedIssueFromBotComment", () => {
     expect(
       hasLinkedIssueBotComment({
         comments,
-        issueNumber: 123,
+        prNumber: 123,
       })
     ).toBe(false);
   });
@@ -51,7 +51,7 @@ describe("getLinkedIssueFromBotComment", () => {
     expect(
       hasLinkedIssueBotComment({
         comments,
-        issueNumber: 123,
+        prNumber: 123,
       })
     ).toBe(false);
   });

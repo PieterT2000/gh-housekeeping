@@ -32,18 +32,19 @@ export async function autolinkIssue(octokit: Octokit, prNumber: number) {
     return;
   }
 
-  const reviewComments = await octokit.rest.issues.listComments({
+  const issueComments = await octokit.rest.issues.listComments({
     owner,
     repo,
     issue_number: issueNumber,
+    per_page: 200,
   });
 
   const botComment = hasLinkedIssueBotComment({
-    comments: reviewComments.data.map((comment) => ({
+    comments: issueComments.data.map((comment) => ({
       userName: comment.user?.login,
       body: comment.body,
     })),
-    issueNumber,
+    prNumber,
   });
 
   if (!botComment) {

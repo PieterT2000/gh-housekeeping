@@ -19,19 +19,19 @@ const botUsername = "github-actions[bot]";
 
 type LinkedIssueParameters = {
   comments: { userName: string | undefined; body: string | undefined }[];
-  issueNumber: number;
+  prNumber: number;
 };
 
-function getLinkedIssueNumberFromBotComment(params: LinkedIssueParameters) {
+function getLinkedIssueBotComment(params: LinkedIssueParameters) {
   return params.comments.find(
     (comment) =>
-      comment.userName === botUsername &&
-      strContains(comment.body, `#${params.issueNumber}`)
+      comment.userName?.toLowerCase() === botUsername.toLowerCase() &&
+      strContains(comment.body, `${params.prNumber}`)
   );
 }
 
 export function hasLinkedIssueBotComment(params: LinkedIssueParameters) {
-  return !!getLinkedIssueNumberFromBotComment(params);
+  return !!getLinkedIssueBotComment(params);
 }
 
 export function strContains(a: string | undefined, b: string) {
